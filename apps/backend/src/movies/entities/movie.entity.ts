@@ -22,25 +22,25 @@ export class Movie extends StarWarsBase {
   producer: string;
 
   @Prop({ required: true })
-  releaseDate: Date;
+  releaseDate: string;
 
   @Prop({ required: true })
   episodeId: number;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }] })
-  characters: Character[];
+  characters?: Character[];
 
   @Prop()
   extCharacterIds: string[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Starship' }] })
-  starships: Starship[];
+  starships?: Starship[];
 
   @Prop()
   extStarshipIds: string[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Planet' }] })
-  planets: Planet[];
+  planets?: Planet[];
 
   @Prop()
   extPlanetIds: string[];

@@ -24,7 +24,7 @@ export class Starship extends StarWarsBase {
   length: string;
 
   @Prop({ required: true })
-  max_AtmospheringSpeed: string;
+  maxAtmospheringSpeed: string;
 
   @Prop({ required: true })
   crew: string;
@@ -48,13 +48,13 @@ export class Starship extends StarWarsBase {
   starshipClass: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }] })
-  pilots: Character[];
+  pilots?: Character[];
 
   @Prop()
   extPilotIds: string[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] })
-  movies: Movie[];
+  movies?: Movie[];
 
   @Prop()
   extMovieIds: string[];

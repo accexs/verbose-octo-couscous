@@ -5,8 +5,8 @@ import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Starship, StarshipDocument } from './entities/starship.entity';
 import { Model } from 'mongoose';
-import { firstValueFrom } from 'rxjs';
 import {
+  fetchAndPaginate,
   getExternalId,
   getUpsertPayload,
   loggUpsertResult,
@@ -42,37 +42,40 @@ export class StarshipsService {
     return `This action removes a #${id} starship`;
   }
 
-  async fetchAll(): Promise<Starship[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get('https://swapi.dev/api/starships'),
-    );
-    this.logger.log(`Inserting [${data.results.length}] entities`);
-    const starshipList = data.results.map(
-      (starship: FetchResponseStarshipDto): CreateStarshipDto => ({
-        name: starship.name,
-        model: starship.model,
-        manufacturer: starship.manufacturer,
-        costInCredits: starship.cost_in_credits,
-        length: starship.length,
-        maxAtmospheringSpeed: starship.max_atmosphering_speed,
-        crew: starship.crew,
-        passengers: starship.passengers,
-        cargoCapacity: starship.cargo_capacity,
-        consumables: starship.consumables,
-        hyperdriveRating: starship.hyperdrive_rating,
-        mglt: starship.MGLT,
-        starshipClass: starship.starship_class,
-        extId: getExternalId(starship.url),
-        extPilotIds: starship.pilots.map((pilotUrl: string) =>
-          getExternalId(pilotUrl),
-        ),
-        extMovieIds: starship.films.map((filmUrl: string) =>
-          getExternalId(filmUrl),
-        ),
-      }),
-    );
-    await this.upsert(starshipList);
-    return starshipList;
+  async fetchAll(): Promise<void> {
+    const swapiUrl = 'https://swapi.dev/api/starships';
+    const starshipListGenerator = fetchAndPaginate(swapiUrl, this.httpService);
+
+    for await (const starshipList of starshipListGenerator) {
+      const curatedList = starshipList.map(
+        (starship: FetchResponseStarshipDto): CreateStarshipDto => {
+          return {
+            name: starship.name,
+            model: starship.model,
+            manufacturer: starship.manufacturer,
+            costInCredits: starship.cost_in_credits,
+            length: starship.length,
+            maxAtmospheringSpeed: starship.max_atmosphering_speed,
+            crew: starship.crew,
+            passengers: starship.passengers,
+            cargoCapacity: starship.cargo_capacity,
+            consumables: starship.consumables,
+            hyperdriveRating: starship.hyperdrive_rating,
+            mglt: starship.MGLT,
+            starshipClass: starship.starship_class,
+            extId: getExternalId(starship.url),
+            extPilotIds: starship.pilots.map((pilotUrl: string) =>
+              getExternalId(pilotUrl),
+            ),
+            extMovieIds: starship.films.map((filmUrl: string) =>
+              getExternalId(filmUrl),
+            ),
+          };
+        },
+      );
+      this.logger.log(`Inserting [${curatedList.length}] entities`);
+      await this.upsert(curatedList);
+    }
   }
 
   async upsert(starshipList: Starship[]) {

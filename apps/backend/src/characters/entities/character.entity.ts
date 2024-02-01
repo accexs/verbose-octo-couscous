@@ -34,19 +34,19 @@ export class Character extends StarWarsBase {
   gender: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] })
-  movies: Movie[];
+  movies?: Movie[];
 
   @Prop()
   extMovieIds: string[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Starship' }] })
-  starships: Starship[];
+  starships?: Starship[];
 
   @Prop()
   extStarshipIds: string[];
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Planet' }] })
-  planet: Planet;
+  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' } })
+  planet?: Planet;
 
   @Prop()
   extPlanetId: string;

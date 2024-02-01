@@ -1,1 +1,3 @@
-export class CreatePlanetDto {}
+import { Planet } from '../entities/planet.entity';
+
+export class CreatePlanetDto extends Planet {}

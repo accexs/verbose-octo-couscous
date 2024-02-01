@@ -36,13 +36,13 @@ export class Planet extends StarWarsBase {
   population: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }] })
-  residents: Character[];
+  residents?: Character[];
 
   @Prop()
   extResidentsIds: string[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] })
-  movies: Movie[];
+  movies?: Movie[];
 
   @Prop()
   extMovieIds: string[];
