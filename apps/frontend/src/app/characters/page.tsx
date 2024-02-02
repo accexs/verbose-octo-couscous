@@ -1,12 +1,17 @@
-import React from "react";
-import { getCharacters } from "@/services/ApiClient";
-import CharacterList from "../../components/Character/CharacterList";
+import React, { Suspense } from "react";
+import Loading from "@/app/loading";
+import { QueryParamsProps } from "@/domain/types";
+import CharacterList from "@/components/Character/CharacterList";
 
-const CharactersPage: React.FC = async () => {
-  const characters = await getCharacters();
+const CharactersPage: React.FC<QueryParamsProps> = async ({ searchParams }) => {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
   return (
-    <div className={'mt-12 flex flex-col'}>
-      <CharacterList characterList={characters} />
+    <div className={"mt-4 flex flex-col"}>
+      <Suspense key={currentPage} fallback={<Loading />}>
+        <CharacterList currentPage={currentPage} />
+      </Suspense>
     </div>
   );
 };

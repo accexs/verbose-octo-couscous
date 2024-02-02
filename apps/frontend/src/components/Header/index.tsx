@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 
 const renderLinks = (): ReactNode => {
   const pathname = usePathname();
+  const activeState = "active border border-warning";
   return (
     <>
       <li>
         <Link
-          className={pathname === "/characters" ? "active" : ""}
+          className={pathname === "/characters" ? activeState : ""}
           href={"/characters"}
         >
           Characters
@@ -18,7 +19,7 @@ const renderLinks = (): ReactNode => {
       </li>
       <li>
         <Link
-          className={pathname === "/movies" ? "active" : ""}
+          className={pathname === "/movies" ? activeState : ""}
           href={"/movies"}
         >
           Movies
@@ -26,7 +27,7 @@ const renderLinks = (): ReactNode => {
       </li>
       <li>
         <Link
-          className={pathname === "/starships" ? "active" : ""}
+          className={pathname === "/starships" ? activeState : ""}
           href={"/starships"}
         >
           Starships
@@ -34,7 +35,7 @@ const renderLinks = (): ReactNode => {
       </li>
       <li>
         <Link
-          className={pathname === "/planets" ? "active" : ""}
+          className={pathname === "/planets" ? activeState : ""}
           href={"/planets"}
         >
           Planets
@@ -78,7 +79,9 @@ const Header: React.FC = () => {
           </div>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-lg menu-horizontal px-1 gap-2">{renderLinks()}</ul>
+          <ul className="menu menu-lg menu-horizontal px-1 gap-2">
+            {renderLinks()}
+          </ul>
         </div>
         <div className={"navbar-end sm:flex md:flex lg:hidden"}>
           <Logo />

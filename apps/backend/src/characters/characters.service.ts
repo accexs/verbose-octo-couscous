@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
-import { UpdateCharacterDto } from './dto/update-character.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Character, CharacterDocument } from './entities/character.entity';
@@ -10,9 +9,10 @@ import {
   getExternalId,
   getUpsertPayload,
   loggUpsertResult,
+  paginate,
 } from '../shared/utils';
 import { FetchResponseCharacterDto } from './dto/fetch-response-character.dto';
-import { FetchResponseGeneric } from '../shared/dto/fetch-response-base.dto';
+import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
 
 @Injectable()
 export class CharactersService {
@@ -24,20 +24,12 @@ export class CharactersService {
     private readonly characterModel: Model<Character>,
   ) {}
 
-  create(createCharacterDto: CreateCharacterDto) {
-    return 'This action adds a new character';
-  }
-
-  findAll(): Promise<CharacterDocument[]> {
-    return this.characterModel.find();
+  async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
+    return await paginate(this.characterModel, page, limitValue);
   }
 
   findOne(id: string): Promise<CharacterDocument | null> {
     return this.characterModel.findById(id);
-  }
-
-  update(id: number, updateCharacterDto: UpdateCharacterDto) {
-    return `This action updates a #${id} character`;
   }
 
   remove(id: number) {

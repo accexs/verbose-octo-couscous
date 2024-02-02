@@ -1,0 +1,24 @@
+.perspectiveContainer {
+    padding-bottom: 25px;
+    transform: perspective(200px) rotateX(45deg);
+}
+
+.textCrawl {
+    font-size: 19px;
+    text-align: justify;
+    font-stretch: expanded;
+    font-family: sans-serif;
+    color: #ffe81f;
+    padding-top: 200px;
+    animation: autoscroll 300s linear;
+}
+
+@keyframes autoscroll {
+    to {
+        margin-top: -5000px;
+    }
+}
+
+.replay {
+    animation: none; /* Pause the animation when replay is triggered */
+}

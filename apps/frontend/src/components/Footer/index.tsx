@@ -15,13 +15,11 @@ const Footer: React.FC = () => {
       </p>
       <div
         className={
-          "relative mt-14 flex w-full flex-row items-center justify-between border-t border-solid border-light px-8 py-6 font-medium"
+          "relative mt-14 flex w-full flex-row items-center justify-between border-t border-solid border-warning px-8 py-6 font-medium"
         }
       >
-        <span className={"text-center"}>
-          &copy; 2023 All rights reserved.
-        </span>
-        <div className={"text-center"}>Made with all love.</div>
+        <span className={"text-center"}>&copy; 2023 All rights reserved.</span>
+        <div className={"text-center"}>Made with ♥</div>
       </div>
     </footer>
   );

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
-import { UpdateMovieDto } from './dto/update-movie.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Movie, MovieDocument } from './entities/movie.entity';
@@ -10,8 +9,10 @@ import {
   getExternalId,
   getUpsertPayload,
   loggUpsertResult,
+  paginate,
 } from '../shared/utils';
 import { FetchResponseMovieDto } from './dto/fetch-response-movie.dto';
+import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
 
 @Injectable()
 export class MoviesService {
@@ -22,20 +23,12 @@ export class MoviesService {
     @InjectModel(Movie.name) private readonly movieModel: Model<Movie>,
   ) {}
 
-  create(createMovieDto: CreateMovieDto) {
-    return 'This action adds a new movie';
-  }
-
-  findAll(): Promise<MovieDocument[]> {
-    return this.movieModel.find();
+  async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
+    return paginate(this.movieModel, page, limitValue);
   }
 
   findOne(id: string): Promise<MovieDocument | null> {
     return this.movieModel.findById(id);
-  }
-
-  update(id: number, updateMovieDto: UpdateMovieDto) {
-    return `This action updates a #${id} movie`;
   }
 
   remove(id: number) {

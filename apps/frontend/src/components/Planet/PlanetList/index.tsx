@@ -1,19 +1,19 @@
 import React from "react";
-import CharacterCard from "@/components/Character/CharacterList/CharacterCard";
-import { getCharacters } from "@/services/ApiClient";
+import { getPlanets } from "@/services/ApiClient";
 import Paginator from "@/components/Paginator";
+import PlanetCard from "@/components/Planet/PlanetList/PlanetCard";
 
-type CharacterListProps = {
+type PlanetListProps = {
   currentPage: number;
 };
 
-const CHARACTERS_PER_PAGE = 6;
+const PLANETS_PER_PAGE = 6;
 
-const CharacterList: React.FC<CharacterListProps> = async ({
+const PlanetList: React.FC<PlanetListProps> = async ({
   currentPage,
-}: CharacterListProps) => {
-  const { data, totalPages } = await getCharacters(
-    `limit=${CHARACTERS_PER_PAGE}&page=${currentPage}`,
+}: PlanetListProps) => {
+  const { data, totalPages } = await getPlanets(
+    `limit=${PLANETS_PER_PAGE}&page=${currentPage}`,
   );
   return (
     <section
@@ -21,18 +21,18 @@ const CharacterList: React.FC<CharacterListProps> = async ({
     >
       <div className={"flex w-full justify-between"}>
         <h2 className={"inline-block text-4xl font-bold capitalize"}>
-          Characters
+          Planets
         </h2>
       </div>
 
-      <div className={"mt-8 grid grid-cols-3 gap-12"}>
-        {data.map((character: any) => {
+      <div className={"mt-8 grid grid-cols-3 gap-8"}>
+        {data.map((planet: any) => {
           return (
             <article
-              key={character._id}
+              key={planet._id}
               className={"col-span-1 row-span-1 lg:max-h-52"}
             >
-              <CharacterCard character={character} />
+              <PlanetCard planet={planet} />
             </article>
           );
         })}
@@ -44,4 +44,4 @@ const CharacterList: React.FC<CharacterListProps> = async ({
   );
 };
 
-export default CharacterList;
+export default PlanetList;

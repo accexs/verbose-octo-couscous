@@ -3,6 +3,8 @@ import { Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { FetchResponseGeneric } from './dto/fetch-response-base.dto';
 import { HttpService } from '@nestjs/axios';
+import { Model } from 'mongoose';
+import { PaginationResponseDto } from './dto/pagination-response.dto';
 
 const getUpsertPayload = (entityList: StarWarsBase[]) => {
   return entityList.map((entity: StarWarsBase) => {
@@ -55,4 +57,30 @@ async function* fetchAndPaginate(
   }
 }
 
-export { getUpsertPayload, getExternalId, loggUpsertResult, fetchAndPaginate };
+const paginate = async (
+  model: Model<StarWarsBase>,
+  page = 1,
+  limitValue = 10,
+): Promise<PaginationResponseDto> => {
+  const query = model.find().sort({ _id: 1 });
+  const totalEntities = await model.countDocuments();
+  const totalPages = Math.ceil(totalEntities / limitValue);
+  const currentPage = Math.min(page, totalPages);
+  if (limitValue) query.limit(limitValue);
+  query.skip((currentPage - 1) * limitValue);
+  return {
+    total: totalEntities,
+    perPage: limitValue,
+    currentPage: currentPage,
+    totalPages: totalPages,
+    data: await query,
+  };
+};
+
+export {
+  getUpsertPayload,
+  getExternalId,
+  loggUpsertResult,
+  fetchAndPaginate,
+  paginate,
+};

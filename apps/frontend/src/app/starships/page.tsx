@@ -1,14 +1,21 @@
-import React from 'react';
-import { getStarships } from '@/services/ApiClient';
+import React, { Suspense } from "react";
+import { QueryParamsProps } from "@/domain/types";
+import Loading from "@/app/loading";
+import StarshipList from "@/components/Starship/StarshipList";
 
-const StarshipsPage: React.FC =  async () => {
-  const starships = await getStarships();
+const StarshipsPage: React.FC<QueryParamsProps> = async ({
+  searchParams,
+}: QueryParamsProps) => {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
   return (
-    <div>
-      <h1>All starships</h1>
-      <pre>{JSON.stringify(starships, null, 2)}</pre>
+    <div className={"mt-4 flex flex-col"}>
+      <Suspense key={currentPage} fallback={<Loading />}>
+        <StarshipList currentPage={currentPage} />
+      </Suspense>
     </div>
   );
-}
+};
 
 export default StarshipsPage;

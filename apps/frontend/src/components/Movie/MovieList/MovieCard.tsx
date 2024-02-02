@@ -2,13 +2,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type CharacterCardProps = {
-  character: any;
+type MovieCardProps = {
+  movie: any;
 };
 
-const CharacterDetails: React.FC<CharacterCardProps> = ({
-  character,
-}: CharacterCardProps) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie }: MovieCardProps) => {
   return (
     <div className={"group flex flex-col items-center h-full"}>
       <div
@@ -18,10 +16,10 @@ const CharacterDetails: React.FC<CharacterCardProps> = ({
       >
         <figure>
           <Image
-            src={`/images/characters/${character.extId}.jpg`}
-            alt={"Character picture"}
-            width={450}
-            height={800}
+            src={`/images/movies/${movie.extId}.jpg`}
+            alt={"Movie picture"}
+            width={150}
+            height={200}
             className={
               "h-full w-full object-cover object-center transition-all duration-300 group-hover:scale-105"
             }
@@ -33,12 +31,15 @@ const CharacterDetails: React.FC<CharacterCardProps> = ({
               "card-title transition-all duration-300 group-hover:text-warning"
             }
           >
-            {character.name}
+            {movie.title}
           </h3>
-          <p>Birth : {character.birthYear}</p>
+          <p className={"text-sm"}>Release date: {movie.releaseDate}</p>
           <div className={"card-actions justify-end"}>
-            <Link href={`/characters/${character._id}`}>
-              <button className={"btn btn-primary"}>More details</button>
+            <Link
+              className={"btn btn-sm btn-warning"}
+              href={`/movies/${movie._id}`}
+            >
+              More details
             </Link>
           </div>
         </div>
@@ -47,4 +48,4 @@ const CharacterDetails: React.FC<CharacterCardProps> = ({
   );
 };
 
-export default CharacterDetails;
+export default MovieCard;

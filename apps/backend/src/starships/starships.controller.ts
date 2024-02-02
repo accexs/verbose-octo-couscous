@@ -1,41 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
-import { CreateStarshipDto } from './dto/create-starship.dto';
-import { UpdateStarshipDto } from './dto/update-starship.dto';
+import { PaginationParamsDto } from '../shared/dto/pagination-params.dto';
 
 @Controller('starships')
 export class StarshipsController {
   constructor(private readonly starshipsService: StarshipsService) {}
 
-  @Post()
-  create(@Body() createStarshipDto: CreateStarshipDto) {
-    return this.starshipsService.create(createStarshipDto);
-  }
-
   @Get()
-  findAll() {
-    return this.starshipsService.findAll();
+  findAll(@Query() { page, limit }: PaginationParamsDto) {
+    return this.starshipsService.findAll(page, limit);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.starshipsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateStarshipDto: UpdateStarshipDto,
-  ) {
-    return this.starshipsService.update(+id, updateStarshipDto);
   }
 
   @Delete(':id')

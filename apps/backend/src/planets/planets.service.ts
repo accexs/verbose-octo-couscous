@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreatePlanetDto } from './dto/create-planet.dto';
-import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { Planet, PlanetDocument } from './entities/planet.entity';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,8 +9,10 @@ import {
   getExternalId,
   getUpsertPayload,
   loggUpsertResult,
+  paginate,
 } from '../shared/utils';
 import { FetchResponsePlanetDto } from './dto/fetch-response-planet.dto';
+import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
 
 @Injectable()
 export class PlanetsService {
@@ -23,20 +24,12 @@ export class PlanetsService {
     private readonly planetModel: Model<Planet>,
   ) {}
 
-  create(createPlanetDto: CreatePlanetDto) {
-    return 'This action adds a new planet';
-  }
-
-  findAll(): Promise<PlanetDocument[]> {
-    return this.planetModel.find();
+  async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
+    return paginate(this.planetModel, page, limitValue);
   }
 
   findOne(id: string): Promise<PlanetDocument | null> {
     return this.planetModel.findById(id);
-  }
-
-  update(id: number, updatePlanetDto: UpdatePlanetDto) {
-    return `This action updates a #${id} planet`;
   }
 
   remove(id: number) {

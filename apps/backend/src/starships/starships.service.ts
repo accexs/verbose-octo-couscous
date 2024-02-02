@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateStarshipDto } from './dto/create-starship.dto';
-import { UpdateStarshipDto } from './dto/update-starship.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Starship, StarshipDocument } from './entities/starship.entity';
@@ -10,8 +9,10 @@ import {
   getExternalId,
   getUpsertPayload,
   loggUpsertResult,
+  paginate,
 } from '../shared/utils';
 import { FetchResponseStarshipDto } from './dto/fetch-response-starship.dto';
+import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
 
 @Injectable()
 export class StarshipsService {
@@ -22,20 +23,12 @@ export class StarshipsService {
     @InjectModel(Starship.name) private readonly starshipModel: Model<Starship>,
   ) {}
 
-  create(createStarshipDto: CreateStarshipDto) {
-    return 'This action adds a new starship';
-  }
-
-  findAll(): Promise<StarshipDocument[]> {
-    return this.starshipModel.find();
+  async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
+    return paginate(this.starshipModel, page, limitValue);
   }
 
   findOne(id: string): Promise<StarshipDocument | null> {
     return this.starshipModel.findById(id);
-  }
-
-  update(id: number, updateStarshipDto: UpdateStarshipDto) {
-    return `This action updates a #${id} starship`;
   }
 
   remove(id: number) {

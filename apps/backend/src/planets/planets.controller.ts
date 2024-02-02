@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PlanetsService } from './planets.service';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
+import { PaginationParamsDto } from '../shared/dto/pagination-params.dto';
 
 @Controller('planets')
 export class PlanetsController {
@@ -21,8 +23,8 @@ export class PlanetsController {
   }
 
   @Get()
-  findAll() {
-    return this.planetsService.findAll();
+  findAll(@Query() { page, limit }: PaginationParamsDto) {
+    return this.planetsService.findAll(page, limit);
   }
 
   @Get(':id')

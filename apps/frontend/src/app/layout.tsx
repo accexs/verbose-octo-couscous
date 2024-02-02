@@ -19,11 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body data-theme={"dark"}>
-        <div className={''}>
-          <Header />
-          {children}
-          <Footer></Footer>
-        </div>
+        <Header />
+        {children}
+        <Footer></Footer>
       </body>
     </html>
   );

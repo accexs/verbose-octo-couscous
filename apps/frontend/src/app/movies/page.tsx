@@ -1,12 +1,17 @@
-import React from "react";
-import { getMovies } from "@/services/ApiClient";
+import React, { Suspense } from "react";
+import Loading from "@/app/loading";
+import { QueryParamsProps } from "@/domain/types";
+import MovieList from "@/components/Movie/MovieList";
 
-const MoviesPage: React.FC = async () => {
-  const movies = await getMovies();
+const MoviesPage: React.FC<QueryParamsProps> = async ({ searchParams }) => {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
   return (
-    <div>
-      <h1>All movies</h1>
-      <pre>{JSON.stringify(movies, null, 2)}</pre>
+    <div className={"mt-4 flex flex-col"}>
+      <Suspense key={currentPage} fallback={<Loading />}>
+        <MovieList currentPage={currentPage} />
+      </Suspense>
     </div>
   );
 };

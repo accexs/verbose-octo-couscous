@@ -1,20 +1,20 @@
 import { StarWarsEntityTypes } from "@/domain/types";
 
 const apiUri = "http://localhost:4000";
-const getCharacters = async () => {
-  return await fetchEntityList("characters");
+const getCharacters = async (query: string = "") => {
+  return await fetchEntityList("characters", query);
 };
 
-const getMovies = async () => {
-  return await fetchEntityList("movies");
+const getMovies = async (query: string = "") => {
+  return await fetchEntityList("movies", query);
 };
 
-const getPlanets = async () => {
-  return await fetchEntityList("planets");
+const getPlanets = async (query: string = "") => {
+  return await fetchEntityList("planets", query);
 };
 
-const getStarships = async () => {
-  return await fetchEntityList("starships");
+const getStarships = async (query: string = "") => {
+  return await fetchEntityList("starships", query);
 };
 
 const getCharacterById = async (id: string) => {
@@ -33,9 +33,12 @@ const getStarshipById = async (id: string) => {
   return await fetchEntityById(id, "starships");
 };
 
-const fetchEntityList = async (entityName: StarWarsEntityTypes) => {
-  const res = await fetch(`${apiUri}/${entityName}`);
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+const fetchEntityList = async (
+  entityName: StarWarsEntityTypes,
+  query: string = "",
+) => {
+  const res = await fetch(`${apiUri}/${entityName}?${query}`);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -44,6 +47,7 @@ const fetchEntityList = async (entityName: StarWarsEntityTypes) => {
 
 const fetchEntityById = async (id: string, entityName: StarWarsEntityTypes) => {
   const res = await fetch(`${apiUri}/${entityName}/${id}`);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
