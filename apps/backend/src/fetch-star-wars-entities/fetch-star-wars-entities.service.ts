@@ -16,10 +16,9 @@ export class FetchStarWarsEntitiesService {
     private readonly starshipsService: StarshipsService,
   ) {}
 
-  @Cron('*/2 * * * *')
+  @Cron('0 */8 * * *')
   async handleCron() {
     this.logger.log('Fetching entities');
-    return;
     await Promise.all([
       this.charactersService.fetchAll(),
       this.moviesService.fetchAll(),

@@ -8,13 +8,19 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { FetchStarWarsEntitiesService } from './fetch-star-wars-entities/fetch-star-wars-entities.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StarshipsModule } from './starships/starships.module';
+import { ConfigModule } from '@nestjs/config';
+import * as process from 'process';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
-    MongooseModule.forRoot('mongodb://localhost:27017/', {
-      dbName: 'star_wars',
-    }),
+    MongooseModule.forRoot(
+      process.env.MONGO_URL ?? 'mongodb://localhost:27017/',
+      {
+        dbName: 'star_wars',
+      },
+    ),
     CharactersModule,
     MoviesModule,
     PlanetsModule,
