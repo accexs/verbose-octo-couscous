@@ -1,6 +1,6 @@
 import { StarWarsEntityTypes } from "@/domain/types";
 
-const apiUri = "http://localhost:4000";
+const apiUri = process.env.BACKEND_URL ?? "http://localhost:4000";
 const getCharacters = async (query: string = "") => {
   return await fetchEntityList("characters", query);
 };
