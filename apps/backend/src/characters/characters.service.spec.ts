@@ -3,12 +3,12 @@ import { CharactersService } from './characters.service';
 import { Character } from './entities/character.entity';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-import { HttpModule, HttpService } from '@nestjs/axios';
-import { createMock, DeepMocked } from '@golevelup/ts-jest';
+import { HttpService } from '@nestjs/axios';
+import { DeepMocked } from '@golevelup/ts-jest';
 
 describe('CharactersService', () => {
-  let service: CharactersService;
-  let model: Model<Character>;
+  let charactersService: CharactersService;
+  let characterModel: Model<Character>;
   let httpService: DeepMocked<HttpService>;
 
   const mockCharacter = {
@@ -31,36 +31,50 @@ describe('CharactersService', () => {
     starships: [],
   };
 
+  const mockCharacterService = {
+    findById: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      // imports: [HttpModule],
       providers: [
         CharactersService,
         {
           provide: HttpService,
-          useValue: createMock<HttpService>(),
+          useValue: httpService,
         },
         {
           provide: getModelToken('Character'),
-          useValue: {
-            new: jest.fn().mockResolvedValue(mockCharacter),
-            constructor: jest.fn().mockResolvedValue(mockCharacter),
-            find: jest.fn(),
-            create: jest.fn(),
-            exec: jest.fn(),
-          },
+          useValue: mockCharacterService,
         },
       ],
     }).compile();
 
-    service = module.get<CharactersService>(CharactersService);
-    model = module.get<Model<Character>>(getModelToken('Character'));
+    charactersService = module.get<CharactersService>(CharactersService);
+    characterModel = module.get<Model<Character>>(
+      getModelToken(Character.name),
+    );
     httpService = module.get(HttpService);
   });
 
   it('should be defined', async () => {
-    expect(service).toBeDefined();
-    const res = await service.fetchAll();
-    console.log(res);
+    expect(charactersService).toBeDefined();
   });
+
+  describe('findOne', () => {
+    it('should return a character', async () => {
+      jest.spyOn(characterModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: jest.fn().mockResolvedValue(mockCharacter),
+          }) as any,
+      );
+
+      const result = await charactersService.findOne(mockCharacter._id);
+
+      expect(characterModel.findById).toHaveBeenCalledWith(mockCharacter._id);
+      expect(result).toEqual(mockCharacter);
+    });
+  });
+  //end tests
 });
