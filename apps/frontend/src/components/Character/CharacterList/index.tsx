@@ -2,6 +2,7 @@ import React from "react";
 import CharacterCard from "@/components/Character/CharacterList/CharacterCard";
 import { getCharacters } from "@/services/ApiClient";
 import Paginator from "@/components/Paginator";
+import Favorite from "@/components/Favorite";
 
 type CharacterListProps = {
   currentPage: number;
@@ -17,7 +18,7 @@ const CharacterList: React.FC<CharacterListProps> = async ({
   );
   return (
     <section
-      className={"flex w-full flex-col items-center justify-center px-32"}
+      className={"flex w-full flex-col items-center justify-center px-2 lg:px-32"}
     >
       <div className={"flex w-full justify-between"}>
         <h2 className={"inline-block text-4xl font-bold capitalize"}>
@@ -25,13 +26,10 @@ const CharacterList: React.FC<CharacterListProps> = async ({
         </h2>
       </div>
 
-      <div className={"mt-8 grid grid-cols-3 gap-12"}>
+      <div className={"mt-8 grid lg:grid-cols-3 gap-2 md:gap-6 lg:gap-12"}>
         {data.map((character: any) => {
           return (
-            <article
-              key={character._id}
-              className={"col-span-1 row-span-1 lg:max-h-52"}
-            >
+            <article key={character._id} className={"col-span-1 row-span-1 "}>
               <CharacterCard character={character} />
             </article>
           );

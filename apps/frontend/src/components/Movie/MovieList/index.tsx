@@ -17,13 +17,13 @@ const MovieList: React.FC<MovieListProps> = async ({
   );
   return (
     <section
-      className={"flex w-full flex-col items-center justify-center px-32"}
+      className={"flex w-full flex-col items-center justify-center px-2 lg:px-32"}
     >
       <div className={"flex w-full justify-between"}>
         <h2 className={"inline-block text-4xl font-bold capitalize"}>Movies</h2>
       </div>
 
-      <div className={"mt-8 grid grid-cols-3 gap-8"}>
+      <div className={"mt-8 grid lg:grid-cols-3 gap-2 md:gap-4 lg:gap-8"}>
         {data.map((movie: any) => {
           return (
             <article

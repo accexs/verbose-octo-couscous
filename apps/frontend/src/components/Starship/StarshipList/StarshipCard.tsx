@@ -32,7 +32,7 @@ const StarshipCard: React.FC<StarshipCardProps> = ({
               "absolute w-full bottom-0 text-center bg-black h-1/5 flex justify-between items-center"
             }
           >
-            <div className={"pl-4 text-xl capitalize"}>
+            <div className={"pl-3 text-xl capitalize"}>
               <h3>{starship.name}</h3>
             </div>
             <div className={"pr-3"}>
