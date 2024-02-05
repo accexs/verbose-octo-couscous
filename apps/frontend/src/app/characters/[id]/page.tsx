@@ -2,11 +2,17 @@ import React from "react";
 import { getCharacterById } from "@/services/ApiClient";
 import { EntityPageProps } from "@/domain/types";
 import Image from "next/image";
+import Link from "next/link";
+import RelatedList from "@/components/RelatedList";
+import { getRelatedMovies, getRelatedStarships } from "@/app/utils";
 
 const CharacterPage: React.FC<EntityPageProps> = async ({
   params,
 }: EntityPageProps) => {
   const character = await getCharacterById(params.id);
+  const relatedMovies = getRelatedMovies(character.movies);
+  const relatedStarships = getRelatedStarships(character.starships);
+
   return (
     <div className={"mt-8 flex flex-col"}>
       <div className={"hero bg-base-200"}>
@@ -28,10 +34,24 @@ const CharacterPage: React.FC<EntityPageProps> = async ({
             <p>Gender: {character.gender}</p>
             <p>Hair Color: {character.hairColor}</p>
             <p>Skin Color: {character.skinColor}</p>
-            <p>Born in: {character.planet}</p>
+            <p>
+              Homeworld:{" "}
+              <Link
+                className={"link hover:text-warning"}
+                href={`/planets/${character.planet._id}`}
+              >
+                {character.planet.name}
+              </Link>
+            </p>
             <div className={"mt-10 border rounded-lg p-2"}>
-              <div>Can be seen in:</div>
-              <div>Known for piloting:</div>
+              <RelatedList
+                title={"Can be seen in"}
+                entityList={relatedMovies}
+              />
+              <RelatedList
+                title={"Known for piloting:"}
+                entityList={relatedStarships}
+              />
             </div>
           </div>
         </div>

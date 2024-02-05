@@ -1,3 +1,5 @@
+import { RelatedEntityType } from "@/domain/types";
+
 function romanize(num: number): string {
   let lookup: Record<string, number> = {
     M: 1000,
@@ -27,4 +29,54 @@ function romanize(num: number): string {
   return roman;
 }
 
-export { romanize };
+const getRelatedMovies = (movieList: any[]): RelatedEntityType[] => {
+  return movieList.map((movie: any): RelatedEntityType => {
+    return {
+      id: movie.id,
+      name: movie.title,
+      imagePath: `/images/movies/${movie.extId}.jpg`,
+      href: `/movies/${movie._id}`,
+    };
+  });
+};
+
+const getRelatedCharacters = (characterList: any[]): RelatedEntityType[] => {
+  return characterList.map((character: any): RelatedEntityType => {
+    return {
+      id: character.id,
+      name: character.name,
+      imagePath: `/images/characters/${character.extId}.jpg`,
+      href: `/characters/${character._id}`,
+    };
+  });
+};
+
+const getRelatedPlanets = (planetList: any[]): RelatedEntityType[] => {
+  return planetList.map((planet: any): RelatedEntityType => {
+    return {
+      id: planet.id,
+      name: planet.name,
+      imagePath: `/images/planets/${planet.extId}.jpg`,
+      href: `/planets/${planet._id}`,
+    };
+  });
+};
+
+const getRelatedStarships = (starshipList: any[]): RelatedEntityType[] => {
+  return starshipList.map((starship: any): RelatedEntityType => {
+    return {
+      id: starship.id,
+      name: starship.name,
+      imagePath: `/images/starships/${starship.extId}.jpg`,
+      href: `/starships/${starship._id}`,
+    };
+  });
+};
+
+export {
+  romanize,
+  getRelatedMovies,
+  getRelatedStarships,
+  getRelatedCharacters,
+  getRelatedPlanets,
+};

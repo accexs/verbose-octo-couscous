@@ -2,6 +2,13 @@ export type EntityPageProps = {
   params: { id: string };
 };
 
+export type RelatedEntityType = {
+  id: string;
+  name: string;
+  imagePath: string;
+  href: string;
+};
+
 export type StarWarsEntityTypes =
   | "characters"
   | "planets"

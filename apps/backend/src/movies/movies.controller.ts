@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { PaginationParamsDto } from '../shared/dto/pagination-params.dto';
 
@@ -14,10 +14,5 @@ export class MoviesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.moviesService.findOne(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.moviesService.remove(+id);
   }
 }

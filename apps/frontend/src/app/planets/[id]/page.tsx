@@ -2,11 +2,15 @@ import React from "react";
 import { getPlanetById } from "@/services/ApiClient";
 import { EntityPageProps } from "@/domain/types";
 import Image from "next/image";
+import { getRelatedCharacters, getRelatedMovies } from "@/app/utils";
+import RelatedList from "@/components/RelatedList";
 
 const PlanetPage: React.FC<EntityPageProps> = async ({
   params,
 }: EntityPageProps) => {
   const planet = await getPlanetById(params.id);
+  const relatedCharacters = getRelatedCharacters(planet.residents);
+  const relatedMovies = getRelatedMovies(planet.movies);
   return (
     <div className={"mt-8 flex flex-col"}>
       <div className={"hero bg-base-200"}>
@@ -31,8 +35,18 @@ const PlanetPage: React.FC<EntityPageProps> = async ({
             <p>Orbital Period: {planet.orbitalPeriod} days</p>
             <p>Rotation Period: {planet.rotationPeriod} days</p>
             <div className={"mt-10 border rounded-lg p-2"}>
-              <div>Residents :</div>
-              <div>Related Movies:</div>
+              {relatedCharacters.length > 0 && (
+                <RelatedList
+                  title={"Residents"}
+                  entityList={relatedCharacters}
+                />
+              )}
+              {relatedCharacters.length > 0 && (
+                <RelatedList
+                  title={"Related Movies"}
+                  entityList={relatedMovies}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -7,32 +7,35 @@ import { Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
+  getPopulateRelationships,
   getUpsertPayload,
   loggUpsertResult,
   paginate,
 } from '../shared/utils';
 import { FetchResponseMovieDto } from './dto/fetch-response-movie.dto';
 import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
+import { RelationshipsService } from '../shared/relationships.service';
+import { RelationshipsMovieDto } from './dto/relationships-movie.dto';
 
 @Injectable()
-export class MoviesService {
+export class MoviesService extends RelationshipsService {
   private readonly logger = new Logger(MoviesService.name);
 
   constructor(
     private readonly httpService: HttpService,
     @InjectModel(Movie.name) private readonly movieModel: Model<Movie>,
-  ) {}
+  ) {
+    super(movieModel);
+  }
 
   async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
     return paginate(this.movieModel, page, limitValue);
   }
 
   findOne(id: string): Promise<MovieDocument | null> {
-    return this.movieModel.findById(id);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} movie`;
+    return this.movieModel
+      .findById(id)
+      .populate(getPopulateRelationships(this.movieModel));
   }
 
   async fetchAll(): Promise<void> {
@@ -70,5 +73,13 @@ export class MoviesService {
   async upsert(movieList: Movie[]) {
     const result = await this.movieModel.bulkWrite(getUpsertPayload(movieList));
     loggUpsertResult(this.logger, result);
+  }
+
+  getRelationships(movie: Movie): RelationshipsMovieDto {
+    return {
+      characters: movie.extCharacterIds,
+      planets: movie.extPlanetIds,
+      starships: movie.extStarshipIds,
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
 import { PaginationParamsDto } from '../shared/dto/pagination-params.dto';
 
@@ -14,10 +14,5 @@ export class StarshipsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.starshipsService.findOne(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.starshipsService.remove(+id);
   }
 }

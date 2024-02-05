@@ -45,7 +45,7 @@ export class Character extends StarWarsBase {
   @Prop()
   extStarshipIds: string[];
 
-  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet' } })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Planet' })
   planet?: Planet;
 
   @Prop()

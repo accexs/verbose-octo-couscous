@@ -7,32 +7,35 @@ import { Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
+  getPopulateRelationships,
   getUpsertPayload,
   loggUpsertResult,
   paginate,
 } from '../shared/utils';
 import { FetchResponseStarshipDto } from './dto/fetch-response-starship.dto';
 import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
+import { RelationshipsService } from '../shared/relationships.service';
+import { RelationshipsStarshipDto } from './dto/relationships-starship.dto';
 
 @Injectable()
-export class StarshipsService {
+export class StarshipsService extends RelationshipsService {
   private readonly logger = new Logger(StarshipsService.name);
 
   constructor(
     private readonly httpService: HttpService,
     @InjectModel(Starship.name) private readonly starshipModel: Model<Starship>,
-  ) {}
+  ) {
+    super(starshipModel);
+  }
 
   async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
     return paginate(this.starshipModel, page, limitValue);
   }
 
   findOne(id: string): Promise<StarshipDocument | null> {
-    return this.starshipModel.findById(id);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} starship`;
+    return this.starshipModel
+      .findById(id)
+      .populate(getPopulateRelationships(this.starshipModel));
   }
 
   async fetchAll(): Promise<void> {
@@ -76,5 +79,9 @@ export class StarshipsService {
       getUpsertPayload(starshipList),
     );
     loggUpsertResult(this.logger, result);
+  }
+
+  getRelationships(starship: Starship): RelationshipsStarshipDto {
+    return { movies: starship.extMovieIds, pilots: starship.extPilotIds };
   }
 }

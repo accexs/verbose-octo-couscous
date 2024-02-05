@@ -2,11 +2,15 @@ import React from "react";
 import { getCharacterById, getStarshipById } from "@/services/ApiClient";
 import { EntityPageProps } from "@/domain/types";
 import Image from "next/image";
+import { getRelatedCharacters, getRelatedMovies } from "@/app/utils";
+import RelatedList from "@/components/RelatedList";
 
 const StarshipPage: React.FC<EntityPageProps> = async ({
   params,
 }: EntityPageProps) => {
   const starship = await getStarshipById(params.id);
+  const relatedCharacters = getRelatedCharacters(starship.pilots);
+  const relatedMovies = getRelatedMovies(starship.movies);
   return (
     <div className={"mt-8 flex flex-col"}>
       <div className={"hero bg-base-200 w-full"}>
@@ -36,8 +40,18 @@ const StarshipPage: React.FC<EntityPageProps> = async ({
             <p>Length: {starship.length}</p>
             <p>Cost in Credits: {starship.costInCredits}</p>
             <div className={"mt-10 border rounded-lg p-2"}>
-              <div>Known Pilots:</div>
-              <div>Movies:</div>
+              {relatedCharacters.length > 0 && (
+                <RelatedList
+                  title={"Known Pilots"}
+                  entityList={relatedCharacters}
+                />
+              )}
+              {relatedMovies.length > 0 && (
+                <RelatedList
+                  title={"Related Movies"}
+                  entityList={relatedMovies}
+                />
+              )}
             </div>
           </div>
         </div>

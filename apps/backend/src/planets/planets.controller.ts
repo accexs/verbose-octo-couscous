@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PlanetsService } from './planets.service';
 import { PaginationParamsDto } from '../shared/dto/pagination-params.dto';
 
@@ -14,10 +14,5 @@ export class PlanetsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.planetsService.findOne(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.planetsService.remove(+id);
   }
 }

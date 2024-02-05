@@ -7,33 +7,36 @@ import { Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
+  getPopulateRelationships,
   getUpsertPayload,
   loggUpsertResult,
   paginate,
 } from '../shared/utils';
 import { FetchResponsePlanetDto } from './dto/fetch-response-planet.dto';
 import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
+import { RelationshipsService } from '../shared/relationships.service';
+import { RelationshipsPlanetDto } from './dto/relationships-planet.dto';
 
 @Injectable()
-export class PlanetsService {
+export class PlanetsService extends RelationshipsService {
   private readonly logger = new Logger(PlanetsService.name);
 
   constructor(
     private readonly httpService: HttpService,
     @InjectModel(Planet.name)
     private readonly planetModel: Model<Planet>,
-  ) {}
+  ) {
+    super(planetModel);
+  }
 
   async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
     return paginate(this.planetModel, page, limitValue);
   }
 
   findOne(id: string): Promise<PlanetDocument | null> {
-    return this.planetModel.findById(id);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} planet`;
+    return this.planetModel
+      .findById(id)
+      .populate(getPopulateRelationships(this.planetModel));
   }
 
   async fetchAll(): Promise<void> {
@@ -73,5 +76,12 @@ export class PlanetsService {
       getUpsertPayload(planetList),
     );
     loggUpsertResult(this.logger, result);
+  }
+
+  getRelationships(planet: Planet): RelationshipsPlanetDto {
+    return {
+      movies: planet.extMovieIds,
+      residents: planet.extResidentsIds,
+    };
   }
 }

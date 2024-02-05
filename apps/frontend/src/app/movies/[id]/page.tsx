@@ -3,12 +3,21 @@ import { getMovieById } from "@/services/ApiClient";
 import { EntityPageProps } from "@/domain/types";
 import Image from "next/image";
 import TextCrawl from "@/components/Movie/TextCrawl";
-import { romanize } from "@/app/utils";
+import {
+  getRelatedCharacters,
+  getRelatedPlanets,
+  getRelatedStarships,
+  romanize,
+} from "@/app/utils";
+import RelatedList from "@/components/RelatedList";
 
 const MoviePage: React.FC<EntityPageProps> = async ({
   params,
 }: EntityPageProps) => {
   const movie = await getMovieById(params.id);
+  const relatedStarships = getRelatedStarships(movie.starships);
+  const relatedCharacters = getRelatedCharacters(movie.characters);
+  const relatedPlanets = getRelatedPlanets(movie.planets);
   return (
     <div className={"mt-8 flex flex-col"}>
       <div className={"hero bg-base-200"}>
@@ -31,9 +40,24 @@ const MoviePage: React.FC<EntityPageProps> = async ({
             <p className={"font-bold"}>Producers: {movie.producer}</p>
             <TextCrawl text={movie.openingCrawl} />
             <div className={"mt-10 border rounded-lg p-2"}>
-              <div>Seen characters:</div>
-              <div>Seen planets:</div>
-              <div>Seen starships:</div>
+              {relatedCharacters.length > 0 && (
+                <RelatedList
+                  title={"Seen characters"}
+                  entityList={relatedCharacters}
+                />
+              )}
+              {relatedPlanets.length > 0 && (
+                <RelatedList
+                  title={"Seen planets"}
+                  entityList={relatedPlanets}
+                />
+              )}
+              {relatedStarships.length > 0 && (
+                <RelatedList
+                  title={"Seen starships"}
+                  entityList={relatedStarships}
+                />
+              )}
             </div>
           </div>
         </div>

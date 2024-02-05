@@ -7,33 +7,36 @@ import { Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
+  getPopulateRelationships,
   getUpsertPayload,
   loggUpsertResult,
   paginate,
 } from '../shared/utils';
 import { FetchResponseCharacterDto } from './dto/fetch-response-character.dto';
 import { PaginationResponseDto } from '../shared/dto/pagination-response.dto';
+import { RelationshipsService } from '../shared/relationships.service';
+import { RelationshipsCharacterDto } from './dto/relationships-character.dto';
 
 @Injectable()
-export class CharactersService {
+export class CharactersService extends RelationshipsService {
   private readonly logger = new Logger(CharactersService.name);
 
   constructor(
     private readonly httpService: HttpService,
     @InjectModel(Character.name)
     private readonly characterModel: Model<Character>,
-  ) {}
+  ) {
+    super(characterModel);
+  }
 
   async findAll(page = 1, limitValue = 10): Promise<PaginationResponseDto> {
     return await paginate(this.characterModel, page, limitValue);
   }
 
   findOne(id: string): Promise<CharacterDocument | null> {
-    return this.characterModel.findById(id);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} character`;
+    return this.characterModel
+      .findById(id)
+      .populate(getPopulateRelationships(this.characterModel));
   }
 
   async fetchAll(): Promise<void> {
@@ -73,5 +76,13 @@ export class CharactersService {
       getUpsertPayload(characterList),
     );
     loggUpsertResult(this.logger, result);
+  }
+
+  getRelationships(character: Character): RelationshipsCharacterDto {
+    return {
+      planet: character.extPlanetId,
+      movies: character.extMovieIds,
+      starships: character.extStarshipIds,
+    };
   }
 }

@@ -5,6 +5,10 @@ import { FetchResponseGeneric } from './dto/fetch-response-base.dto';
 import { HttpService } from '@nestjs/axios';
 import { Model } from 'mongoose';
 import { PaginationResponseDto } from './dto/pagination-response.dto';
+import { Starship } from '../starships/entities/starship.entity';
+import { Character } from '../characters/entities/character.entity';
+import { Planet } from '../planets/entities/planet.entity';
+import { Movie } from '../movies/entities/movie.entity';
 
 const getUpsertPayload = (entityList: StarWarsBase[]) => {
   return entityList.map((entity: StarWarsBase) => {
@@ -59,14 +63,16 @@ async function* fetchAndPaginate(
 
 const paginate = async (
   model: Model<StarWarsBase>,
-  page = 1,
-  limitValue = 10,
+  page: number = 1,
+  limitValue: number,
+  shouldPopulate: boolean = true,
 ): Promise<PaginationResponseDto> => {
   const query = model.find().sort({ _id: 1 });
   const totalEntities = await model.countDocuments();
   const totalPages = Math.ceil(totalEntities / limitValue);
   const currentPage = Math.min(page, totalPages);
   if (limitValue) query.limit(limitValue);
+  if (shouldPopulate) query.populate(getPopulateRelationships(model));
   query.skip((currentPage - 1) * limitValue);
   return {
     total: totalEntities,
@@ -77,10 +83,30 @@ const paginate = async (
   };
 };
 
+const getPopulateRelationships = (model: Model<StarWarsBase>): string[] => {
+  switch (model.modelName) {
+    case Character.name:
+      return ['planet', 'movies', 'starships'];
+
+    case Starship.name:
+      return ['pilots', 'movies'];
+
+    case Planet.name:
+      return ['residents', 'movies'];
+
+    case Movie.name:
+      return ['characters', 'planets', 'starships'];
+
+    default:
+      return [];
+  }
+};
+
 export {
   getUpsertPayload,
   getExternalId,
   loggUpsertResult,
   fetchAndPaginate,
   paginate,
+  getPopulateRelationships,
 };
