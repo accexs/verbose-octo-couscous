@@ -24,10 +24,10 @@ export class FetchStarWarsEntitiesService {
   async handleCron() {
     this.logger.log('Fetching and importing entities');
     await Promise.all([
-      // this.charactersService.fetchAll(),
-      // this.moviesService.fetchAll(),
-      // this.planetsService.fetchAll(),
-      // this.starshipsService.fetchAll(),
+      this.charactersService.fetchAll(),
+      this.moviesService.fetchAll(),
+      this.planetsService.fetchAll(),
+      this.starshipsService.fetchAll(),
     ]);
     this.logger.log('Initiating relationships');
     await Promise.all([

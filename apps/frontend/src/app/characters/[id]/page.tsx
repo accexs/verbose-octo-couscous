@@ -44,14 +44,18 @@ const CharacterPage: React.FC<EntityPageProps> = async ({
               </Link>
             </p>
             <div className={"mt-10 border rounded-lg p-2"}>
-              <RelatedList
-                title={"Can be seen in"}
-                entityList={relatedMovies}
-              />
-              <RelatedList
-                title={"Known for piloting:"}
-                entityList={relatedStarships}
-              />
+              {relatedMovies.length > 0 && (
+                <RelatedList
+                  title={"Can be seen in"}
+                  entityList={relatedMovies}
+                />
+              )}
+              {relatedStarships.length > 0 && (
+                <RelatedList
+                  title={"Known for piloting:"}
+                  entityList={relatedStarships}
+                />
+              )}
             </div>
           </div>
         </div>
