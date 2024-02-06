@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
-  title: "A star wars codex",
+  title: "A Star Wars Codex",
   description: "Information about star wars.",
 };
 
