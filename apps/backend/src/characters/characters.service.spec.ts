@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CharactersService } from './characters.service';
 import { Character } from './entities/character.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { HttpService } from '@nestjs/axios';
 import { DeepMocked } from '@golevelup/ts-jest';
+import { NotFoundException } from '@nestjs/common';
 
 describe('CharactersService', () => {
   let charactersService: CharactersService;
@@ -31,7 +32,7 @@ describe('CharactersService', () => {
     starships: [],
   };
 
-  const mockCharacterService = {
+  const mockCharacterModel = {
     findById: jest.fn(),
   };
 
@@ -44,8 +45,8 @@ describe('CharactersService', () => {
           useValue: httpService,
         },
         {
-          provide: getModelToken('Character'),
-          useValue: mockCharacterService,
+          provide: getModelToken(Character.name),
+          useValue: mockCharacterModel,
         },
       ],
     }).compile();
@@ -74,6 +75,19 @@ describe('CharactersService', () => {
 
       expect(characterModel.findById).toHaveBeenCalledWith(mockCharacter._id);
       expect(result).toEqual(mockCharacter);
+    });
+
+    it('should throw NotFoundException', async () => {
+      const badId = 'someId';
+
+      const isValidObjectIdMock = jest
+        .spyOn(mongoose, 'isValidObjectId')
+        .mockReturnValue(false);
+
+      await expect(charactersService.findOne(badId)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(isValidObjectIdMock).toHaveBeenCalledWith(badId);
     });
   });
   //end tests

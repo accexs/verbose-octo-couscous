@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Movie, MovieDocument } from './entities/movie.entity';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
@@ -32,7 +32,8 @@ export class MoviesService extends RelationshipsService {
     return paginate(this.movieModel, page, limitValue);
   }
 
-  findOne(id: string): Promise<MovieDocument | null> {
+  async findOne(id: string): Promise<MovieDocument | null> {
+    if (!isValidObjectId(id)) throw new NotFoundException();
     return this.movieModel
       .findById(id)
       .populate(getPopulateRelationships(this.movieModel));

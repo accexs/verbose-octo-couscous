@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { Planet, PlanetDocument } from './entities/planet.entity';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
@@ -33,7 +33,8 @@ export class PlanetsService extends RelationshipsService {
     return paginate(this.planetModel, page, limitValue);
   }
 
-  findOne(id: string): Promise<PlanetDocument | null> {
+  async findOne(id: string): Promise<PlanetDocument | null> {
+    if (!isValidObjectId(id)) throw new NotFoundException();
     return this.planetModel
       .findById(id)
       .populate(getPopulateRelationships(this.planetModel));

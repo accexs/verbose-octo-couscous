@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Character, CharacterDocument } from './entities/character.entity';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
@@ -33,7 +33,8 @@ export class CharactersService extends RelationshipsService {
     return await paginate(this.characterModel, page, limitValue);
   }
 
-  findOne(id: string): Promise<CharacterDocument | null> {
+  async findOne(id: string): Promise<CharacterDocument | null> {
+    if (!isValidObjectId(id)) throw new NotFoundException();
     return this.characterModel
       .findById(id)
       .populate(getPopulateRelationships(this.characterModel));

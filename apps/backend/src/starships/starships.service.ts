@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Starship, StarshipDocument } from './entities/starship.entity';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import {
   fetchAndPaginate,
   getExternalId,
@@ -32,7 +32,8 @@ export class StarshipsService extends RelationshipsService {
     return paginate(this.starshipModel, page, limitValue);
   }
 
-  findOne(id: string): Promise<StarshipDocument | null> {
+  async findOne(id: string): Promise<StarshipDocument | null> {
+    if (!isValidObjectId(id)) throw new NotFoundException();
     return this.starshipModel
       .findById(id)
       .populate(getPopulateRelationships(this.starshipModel));
